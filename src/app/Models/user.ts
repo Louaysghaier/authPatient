@@ -12,7 +12,7 @@ export class User {
     refreshToken?: string;
     address?: string;
     valid?: boolean;
-    number?: number;
+    number?: string;
     image?: string;
     roles?:Role[]=[];
     

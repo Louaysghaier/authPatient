@@ -51,11 +51,11 @@ export class AccountService {
                 console.info(user);
                 this.userSubject.next(user);
                 this.isconn=true;
-                this.getuserById(user.id).subscribe((data: User) => {
-                    localStorage.setItem('myuserinfo', JSON.stringify(data));
-                    this.CurrentUserInfoSubject.next(data);
+                // this.getuserById(user.id).subscribe((data: User) => {
+                //     localStorage.setItem('myuserinfo', JSON.stringify(data));
+                //     this.CurrentUserInfoSubject.next(data);
 
-                });
+                // });
                 // this.GroupChatservice.getGroupChatByUser(user.id).subscribe((data: GroupChat) => {
                 //     localStorage.setItem('currentGroupChat', JSON.stringify(data));
                 //     this.CurrentgroupchatSubject.next(data);
@@ -128,8 +128,8 @@ export class AccountService {
         this.router.navigate(['/account/login']);
     }
 
-    register(user: User, roleName: any) {
-        return this.http.post(`${environment.apiUrl}/api/auth/signup/employee/${roleName}`, user);
+    register(user: User) {
+        return this.http.post(`${environment.apiUrl}/api/medecin/signup/medecin`, user);
     }
 
     getAll() {

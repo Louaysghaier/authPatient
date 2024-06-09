@@ -17,7 +17,7 @@ password: any;
   constructor(private fb: FormBuilder, private authService: AccountService, private router: Router) {
     this.signInForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
     });
   }
   onSubmit() {

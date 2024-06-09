@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoleName } from 'src/app/Models/Role';
 import { User } from 'src/app/Models/user';
@@ -17,75 +17,51 @@ export class SignUpComponent {
   focus1: boolean = false;
   focus2: boolean = false;
   agreePrivacy: boolean = false;
-  
+  signupForm: FormGroup=new FormGroup({});
+
   signupError: string = '';
   
   
-  constructor(private authService: AccountService, private router: Router) { }
+  constructor(private authService: AccountService, private router: Router,private fb: FormBuilder) { }
   ngOnInit() {
-    this.user = {
-      name: '',
-      username: '',
-      email: '',
-      password: '',
-      address: '',
-      Role: '',
-      number:0,
-    };
+    this.signupForm = this.fb.group({
+      name: ['', Validators.required],
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.pattern('^(?=.*[a-zA-Z])(?=.*\\d).+$')]],
+      address: ['', Validators.required],
+      number: ['', Validators.required]
+    });
   }
-  user: User= {
-    name: '',
-    username: '',
-    email: '',
-    password: '',
-    address: '',
-    //Role: '',
-    number:0,
-  };
-  onSubmit(signupForm: NgForm) {
-      if (signupForm.valid && this.agreePrivacy) {
-        const user :User = {
-          name: this.user.name,
-          username: this.user.username, 
-          email: this.user.email,
-          password: this.user.password,
-          address: this.user.address, 
-          number: this.user.number,
-        };
-        //const roleName = this.user.Role ; 
-        
-        this.authService.register(user, "ROLE_MEDECIN").subscribe(
-          
-          (response) => {
-            localStorage.setItem('email', this.user.email!);
 
-            console.log('User registered successfully!');
-            Swal.fire({
-              title: "Open Your mail?",
-              text: "check your mail account for verification !",
-              icon: "success"
-            });
-            //alert('check your mail account for verification !');
-            // this.router.navigate(['/verification']); 
+  onSubmit() {
+    if (this.signupForm.valid ) {
+      const user = this.signupForm.value;
 
-          },
-          (error) => {
-            console.error('Error during registration.', error);
+      this.authService.register(user).subscribe(
+        (response) => {
+          localStorage.setItem('email', user.email);
 
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong! ",
-            });
-            this.signupError = 'Error during registration. Please try again.';
-           // window.location.reload();
-
-          }
-        );
-      } else {
-        console.log('Form is invalid or Privacy Policy not agreed.');
-        //window.location.reload();
-      }
+          console.log('User registered successfully!');
+          Swal.fire({
+            title: "Open Your mail?",
+            text: "check your mail account for verification !",
+            icon: "success"
+          });
+        },
+        (error) => {
+          console.error('Error during registration.', error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong! ",
+          });
+          this.signupError = 'Error during registration. Please try again.';
+        }
+      );
+    } else {
+      console.log('Form is invalid or Privacy Policy not agreed.');
     }
+  }
     
 }
